@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -17,6 +19,8 @@ import butterknife.OnClick;
 public class AddTaskFragment extends Fragment {
 
     private AddTaskCallback callback;
+
+
 
     @BindView(R.id.title_input_edittext)
     protected EditText titleInput;
@@ -50,7 +54,7 @@ public class AddTaskFragment extends Fragment {
                 priorityInput.getText().toString().isEmpty()) {
             Toast.makeText(getContext(), "All fields are required", Toast.LENGTH_LONG).show();
         } else {
-            Task task = new Task(titleInput.getText().toString(), dueDateInput.getText().toString(), detailInput.getText().toString(), false, " ", false);
+            Task task = new Task(titleInput.getText().toString(), dueDateInput.getText().toString(), detailInput.getText().toString(), false, " ", false, DateConverter.fromTimestamp((long)Calendar.DATE), null);
             callback.addTask(task);
         }
 

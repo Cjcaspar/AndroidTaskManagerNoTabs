@@ -7,7 +7,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-@Database(version = 1, entities = Task.class)
+@Database(version = 2, entities = Task.class)
 @TypeConverters(DateConverter.class)
 abstract class TaskDatabase extends RoomDatabase {
 
@@ -17,7 +17,7 @@ abstract class TaskDatabase extends RoomDatabase {
 
         public static TaskDatabase getDatabase(Context context) {
             if (INSTANCE == null) {
-                INSTANCE = Room.databaseBuilder(context.getApplicationContext(), TaskDatabase.class, "task_database").allowMainThreadQueries().build();
+                INSTANCE = Room.databaseBuilder(context.getApplicationContext(), TaskDatabase.class, "task_database").allowMainThreadQueries().fallbackToDestructiveMigration().build();
             }
             return INSTANCE;
         }

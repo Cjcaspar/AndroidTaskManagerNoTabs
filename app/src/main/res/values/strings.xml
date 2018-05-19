@@ -8,5 +8,13 @@
     <string name="edit_task_button">Edit task</string>
     <string name="mark_task_complete_button">mark task complete</string>
     <string name="save_changes_button">save changes</string>
-    <string name="cancel_changes_button">cancel</string>
+    <string name="cancel_changes_button">Cancel</string>
+    <string name="backButton">Back</string>
+    <string name="title_view">Title: %1$s</string>
+    <string name="details_view">Details: %1$s</string>
+    <string name="due_date_view">Due Date: %1$s</string>
+    <string name="created_date_view">Task created on: %1$s</string>
+
+
+
 </resources>

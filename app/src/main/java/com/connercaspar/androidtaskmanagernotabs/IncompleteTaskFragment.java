@@ -12,14 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback{
-
+public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterCallback{
 
     @BindView(R.id.all_recycler_view)
     protected RecyclerView recyclerViewAll;
@@ -27,7 +27,8 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
 
     private Adapter adapter;
     private List<Task> taskList;
-    private AllTaskCallback callback;
+    private ArrayList<Task> incompleteList;
+    private IncompleteTaskCallback callback;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -52,16 +53,30 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
         ButterKnife.bind(this, view);
         taskList = callback.getTasks();
 
+        incompleteList = getIncompleteList(taskList);
+
 
         setupList();
         return view;
+    }
+
+    private ArrayList<Task> getIncompleteList(List<Task> taskList) {
+        ArrayList<Task> newList = new ArrayList<>();
+
+        for (Task task : taskList) {
+            if (!task.isComplete()) {
+                newList.add(task);
+            }
+        }
+
+        return newList;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupList() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
-        adapter = new Adapter(taskList, this);
+        adapter = new Adapter(incompleteList, this);
 
         recyclerViewAll.setAdapter(adapter);
         recyclerViewAll.setLayoutManager(linearLayoutManager);
@@ -70,17 +85,17 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
         adapter.notifyDataSetChanged();
     }
 
-    public void attachParent(AllTaskCallback callback) {
+    public void attachParent(IncompleteTaskCallback callback) {
         this.callback = callback;
     }
 
 
 
-    public static AllTaskFragment newInstance() {
+    public static IncompleteTaskFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        AllTaskFragment fragment = new AllTaskFragment();
+        IncompleteTaskFragment fragment = new IncompleteTaskFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,14 +106,13 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
     }
 
     @OnClick(R.id.back_button)
-    public void allBackButtonClicked() {
-        callback.allBackButtonClicked();
+    public void incompleteBackButtonClicked() {
+        callback.incompleteBackButtonClicked();
     }
 
-    public interface AllTaskCallback {
+    interface IncompleteTaskCallback {
         List<Task> getTasks();
         void launchEditTaskFragment(Task task);
-        void allBackButtonClicked();
+        void incompleteBackButtonClicked();
     }
-
 }

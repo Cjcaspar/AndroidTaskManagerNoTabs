@@ -1,6 +1,7 @@
 package com.connercaspar.androidtaskmanagernotabs;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,12 @@ import butterknife.OnClick;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
+    private final AdapterCallback callback;
     List<Task> taskList;
 
-    public Adapter(List<Task> taskList) {
+    public Adapter(List<Task> taskList, AdapterCallback callback) {
         this.taskList = taskList;
+        this.callback = callback;
     }
 
     @NonNull
@@ -31,6 +34,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         holder.bind(position);
+        holder.layout.setOnClickListener(holder.onItemClicked(taskList.get(position)));
 
     }
 
@@ -48,12 +52,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         private TextView taskTitle;
         private TextView dueDate;
+        private ConstraintLayout layout;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
             taskTitle = itemView.findViewById(R.id.item_title);
             dueDate = itemView.findViewById(R.id.item_due_date);
+            layout = itemView.findViewById(R.id.item_row_layout);
             //root = dueDate.getRootView();
         }
 
@@ -67,14 +73,19 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         //TODO: ONCLICK LISTENER FOR ITEMS
 
-        public View.OnClickListener onItemClick(Task task) {
+        public View.OnClickListener onItemClicked(final Task task) {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    callback.onTaskClicked(task);
                 }
             };
         }
+
+    }
+
+    interface AdapterCallback {
+        void onTaskClicked(Task task);
     }
 
 }

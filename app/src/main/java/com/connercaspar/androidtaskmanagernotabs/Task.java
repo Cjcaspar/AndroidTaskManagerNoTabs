@@ -4,9 +4,14 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.Calendar;
+import java.util.Date;
 
 @Entity
-public class Task {
+public class Task implements Parcelable{
+
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -29,13 +34,21 @@ public class Task {
     @ColumnInfo(name = "is_priority")
     private boolean isPriority;
 
-    public Task(String title, String dueDate, String details, boolean isComplete, String completeDate, boolean isPriority) {
+    @ColumnInfo(name = "date_created")
+    private Date dateCreated;
+
+    @ColumnInfo(name = "date_completed")
+    private Date dateCompleted;
+
+    public Task(String title, String dueDate, String details, boolean isComplete, String completeDate, boolean isPriority, Date dateCreated, Date dateCompleted) {
         this.title = title;
         this.dueDate = dueDate;
         this.details = details;
         this.isComplete = isComplete;
         this.completeDate = completeDate;
         this.isPriority = isPriority;
+        this.dateCreated = dateCreated;
+        this.dateCompleted = dateCompleted;
     }
 
     protected Task(Parcel in) {
@@ -48,6 +61,18 @@ public class Task {
         isPriority = in.readByte() != 0;
     }
 
+
+    public static final Creator<Task> CREATOR = new Creator<Task>() {
+        @Override
+        public Task createFromParcel(Parcel in) {
+            return new Task(in);
+        }
+
+        @Override
+        public Task[] newArray(int size) {
+            return new Task[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -105,4 +130,37 @@ public class Task {
         this.id = id;
     }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getDateCompleted() {
+        return dateCompleted;
+    }
+
+    public void setDateCompleted(Date dateCompleted) {
+        this.dateCompleted = dateCompleted;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeString(dueDate);
+        dest.writeString(details);
+        dest.writeByte((byte) (isComplete ? 1 : 0));
+        dest.writeString(completeDate);
+        dest.writeByte((byte) (isPriority ? 1 : 0));
+    }
 }

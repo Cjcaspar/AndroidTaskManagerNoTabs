@@ -2,6 +2,7 @@ package com.connercaspar.androidtaskmanagernotabs;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -12,14 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback{
-
+public class CompleteTaskFragment extends Fragment implements Adapter.AdapterCallback {
 
     @BindView(R.id.all_recycler_view)
     protected RecyclerView recyclerViewAll;
@@ -27,7 +28,8 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
 
     private Adapter adapter;
     private List<Task> taskList;
-    private AllTaskCallback callback;
+    private ArrayList<Task> completeList;
+    private CompleteTaskCallback callback;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -52,16 +54,30 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
         ButterKnife.bind(this, view);
         taskList = callback.getTasks();
 
+        completeList = getCompleteList(taskList);
+
 
         setupList();
         return view;
+    }
+
+    private ArrayList<Task> getCompleteList(List<Task> taskList) {
+        ArrayList<Task> newList = new ArrayList<>();
+
+        for (Task task : taskList) {
+            if (task.isComplete()) {
+                newList.add(task);
+            }
+        }
+
+        return newList;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupList() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
-        adapter = new Adapter(taskList, this);
+        adapter = new Adapter(completeList, this);
 
         recyclerViewAll.setAdapter(adapter);
         recyclerViewAll.setLayoutManager(linearLayoutManager);
@@ -70,17 +86,17 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
         adapter.notifyDataSetChanged();
     }
 
-    public void attachParent(AllTaskCallback callback) {
+    public void attachParent(CompleteTaskCallback callback) {
         this.callback = callback;
     }
 
 
 
-    public static AllTaskFragment newInstance() {
+    public static CompleteTaskFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        AllTaskFragment fragment = new AllTaskFragment();
+        CompleteTaskFragment fragment = new CompleteTaskFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,14 +107,14 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
     }
 
     @OnClick(R.id.back_button)
-    public void allBackButtonClicked() {
-        callback.allBackButtonClicked();
+    public void completeBackButtonClicked() {
+        callback.completeBackButtonClicked();
     }
 
-    public interface AllTaskCallback {
+    interface CompleteTaskCallback {
         List<Task> getTasks();
         void launchEditTaskFragment(Task task);
-        void allBackButtonClicked();
+        void completeBackButtonClicked();
     }
 
 }
