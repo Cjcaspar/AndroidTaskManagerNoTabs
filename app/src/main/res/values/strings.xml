@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">AndroidTaskManagerNoTabs</string>
+    <string name="view_all_tasks">View All Tasks</string>
+    <string name="view_all_complete_tasks">View all complete tasks</string>
+    <string name="view_all_incomplete_tasks">View all Incomplete Tasks</string>
+    <string name="add_a_new_task">Add a new task</string>
+    <string name="getinput">getinput</string>
+    <string name="edit_task_button">Edit task</string>
+    <string name="mark_task_complete_button">mark task complete</string>
+    <string name="save_changes_button">save changes</string>
+    <string name="cancel_changes_button">cancel</string>
+</resources>
