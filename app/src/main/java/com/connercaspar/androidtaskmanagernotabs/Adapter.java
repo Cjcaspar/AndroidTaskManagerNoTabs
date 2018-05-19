@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -53,6 +54,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         private TextView taskTitle;
         private TextView dueDate;
         private ConstraintLayout layout;
+        private FrameLayout priorityBackground;
 
 
         public ViewHolder(View itemView) {
@@ -60,15 +62,15 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             taskTitle = itemView.findViewById(R.id.item_title);
             dueDate = itemView.findViewById(R.id.item_due_date);
             layout = itemView.findViewById(R.id.item_row_layout);
-            //root = dueDate.getRootView();
+            priorityBackground = itemView.findViewById(R.id.item_frame);
         }
 
         public void bind(int position) {
             taskTitle.setText(taskList.get(position).getTitle());
             dueDate.setText(taskList.get(position).getDueDate());
-//            if (taskList.get(position).isPriority()) {
-//                root.setBackgroundColor(ContextCompat.getColor(root.getContext(), R.color.colorAccent));
-//            }
+            if (taskList.get(position).isPriority()) {
+                priorityBackground.setBackgroundColor(App.context().getResources().getColor(R.color.red));
+            }
         }
 
         //TODO: ONCLICK LISTENER FOR ITEMS

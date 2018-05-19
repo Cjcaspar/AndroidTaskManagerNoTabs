@@ -12,6 +12,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,14 +38,20 @@ public class EditTaskFragment extends Fragment{
     @BindView(R.id.priority_textview)
     public TextView priorityTextView;
 
+    @BindView(R.id.date_completed_textview)
+    public TextView dateCompletedTextView;
+
+    @BindView(R.id.date_created_textview)
+    public TextView dateCreatedTextView;
+
     @BindView(R.id.title_edittext)
     public EditText titleEditText;
 
     @BindView(R.id.detail_edittext)
     public EditText detailEditText;
 
-    @BindView(R.id.due_date_edittext)
-    public EditText dueDateEditText;
+    @BindView(R.id.due_date_day_edittext)
+    public EditText dueDateDayEditText;
 
     @BindView(R.id.priority_edittext)
     public EditText priorityEditText;
@@ -60,8 +71,18 @@ public class EditTaskFragment extends Fragment{
     @BindView(R.id.edit_back_button)
     protected Button editBackButton;
 
+    @BindView(R.id.due_date_month_edittext)
+    protected EditText dueDateMonthEditText;
+
+    @BindView(R.id.due_date_year_edittext)
+    protected EditText dueDateYearEditText;
+
     private Task task;
     private EditCallback callback;
+
+    SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+    Calendar calendar = Calendar.getInstance();
+    Date now = calendar.getTime();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,15 +96,8 @@ public class EditTaskFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_task, container, false);
         ButterKnife.bind(this, view);
-        titleTextView.setText(getResources().getString(R.string.title_view, task.getTitle()));
-        titleEditText.setText(task.getTitle());
-        detailTextView.setText(getResources().getString(R.string.details_view, task.getDetails()));
-        detailEditText.setText(task.getDetails());
-        dueDateEditText.setText(getResources().getString(R.string.due_date_view, task.getDueDate()));
-        dueDateTextView.setText(task.getDueDate());
-        if (task.isComplete()) {
-            markCompleteButton.setVisibility(View.INVISIBLE);
-        }
+        setupTextView();
+
         return view;
     }
 
@@ -109,29 +123,73 @@ public class EditTaskFragment extends Fragment{
         editTaskButton.setVisibility(View.INVISIBLE);
         markCompleteButton.setVisibility(View.INVISIBLE);
         editBackButton.setVisibility(View.INVISIBLE);
+        dateCompletedTextView.setVisibility(View.INVISIBLE);
+        dateCreatedTextView.setVisibility(View.INVISIBLE);
 
         titleEditText.setVisibility(View.VISIBLE);
         detailEditText.setVisibility(View.VISIBLE);
-        dueDateEditText.setVisibility(View.VISIBLE);
+        dueDateDayEditText.setVisibility(View.VISIBLE);
+        dueDateMonthEditText.setVisibility(View.VISIBLE);
+        dueDateYearEditText.setVisibility(View.VISIBLE);
         priorityEditText.setVisibility(View.VISIBLE);
         saveChangesButton.setVisibility(View.VISIBLE);
         cancelChangesButton.setVisibility(View.VISIBLE);
+
     }
 
     @OnClick(R.id.mark_task_complete_button)
     protected void markTaskCompleteClicked() {
         task.setComplete(true);
+        task.setDateCompleted(now);
         callback.saveEditTask(task);
     }
 
     @OnClick(R.id.save_changes_button)
     protected void saveChangesClicked() {
-        task.setTitle(titleEditText.getText().toString());
-        task.setDetails(detailEditText.getText().toString());
-        task.setDueDate(dueDateEditText.getText().toString());
-        //task.setPriority();
-        callback.saveEditTask(task);
+
+        if (titleEditText.getText().toString().isEmpty() ||
+                detailEditText.getText().toString().isEmpty() ||
+                dueDateDayEditText.getText().toString().isEmpty() ||
+                dueDateMonthEditText.getText().toString().isEmpty() ||
+                dueDateYearEditText.getText().toString().isEmpty() ||
+                priorityEditText.getText().toString().isEmpty()) {
+
+            Toast.makeText(getContext(), "All fields are required", Toast.LENGTH_LONG).show();
+
+        } else if (!priorityEditText.getText().toString().equalsIgnoreCase("y") && !priorityEditText.getText().toString().equalsIgnoreCase("n")) {
+
+            Toast.makeText(getContext(), "Please enter Y/N into the priority field", Toast.LENGTH_LONG).show();
+
+        } else {
+
+            try {
+                calendar.set(Calendar.MONTH, (Integer.parseInt(dueDateMonthEditText.getText().toString())-1));
+                calendar.set(Calendar.YEAR, Integer.parseInt(dueDateYearEditText.getText().toString()));
+                calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dueDateDayEditText.getText().toString()));
+
+                String sDate = format.format(calendar.getTime());
+
+                task.setDueDate(sDate);
+
+
+                if (priorityEditText.getText().toString().equalsIgnoreCase("y")) {
+                    task.setPriority(true);
+                } else {
+                    task.setPriority(false);
+                }
+
+                task.setTitle(titleEditText.getText().toString());
+                task.setDetails(detailEditText.getText().toString());
+
+                callback.saveEditTask(task);
+
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Invalid date format. Please try again.", Toast.LENGTH_LONG).show();
+            }
+
+        }
     }
+
 
     @OnClick(R.id.cancel_changes_button)
     protected void cancelChangesButtonClicked() {
@@ -141,16 +199,49 @@ public class EditTaskFragment extends Fragment{
         priorityTextView.setVisibility(View.VISIBLE);
         editTaskButton.setVisibility(View.VISIBLE);
         editBackButton.setVisibility(View.VISIBLE);
+        dateCreatedTextView.setVisibility(View.VISIBLE);
 
         titleEditText.setVisibility(View.INVISIBLE);
         detailEditText.setVisibility(View.INVISIBLE);
-        dueDateEditText.setVisibility(View.INVISIBLE);
+        dueDateDayEditText.setVisibility(View.INVISIBLE);
+        dueDateYearEditText.setVisibility(View.INVISIBLE);
+        dueDateMonthEditText.setVisibility(View.INVISIBLE);
         priorityEditText.setVisibility(View.INVISIBLE);
         saveChangesButton.setVisibility(View.INVISIBLE);
         cancelChangesButton.setVisibility(View.INVISIBLE);
 
         if (!task.isComplete()) {
             markCompleteButton.setVisibility(View.VISIBLE);
+        } else {
+            dateCompletedTextView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setupTextView() {
+        titleTextView.setText(getResources().getString(R.string.title_view, task.getTitle()));
+        titleEditText.setText(task.getTitle());
+        detailTextView.setText(getResources().getString(R.string.details_view, task.getDetails()));
+        detailEditText.setText(task.getDetails());
+        dueDateTextView.setText(getResources().getString(R.string.due_date_view, task.getDueDate()));
+
+        String sDateCreated = format.format(task.getDateCreated());
+        dateCreatedTextView.setText(getResources().getString(R.string.created_date_view, sDateCreated));
+
+
+        if (task.isPriority()) {
+            priorityTextView.setText(getResources().getString(R.string.priority_view, "Yes"));
+        } else {
+            priorityTextView.setText(getResources().getString(R.string.priority_view, "No"));
+        }
+
+
+
+        if (task.isComplete()) {
+            markCompleteButton.setVisibility(View.INVISIBLE);
+            String sDateCompleted = format.format(task.getDateCompleted());
+            priorityTextView.setText(getResources().getString(R.string.complete_date_view, sDateCompleted));
+        } else  {
+            dateCompletedTextView.setVisibility(View.INVISIBLE);
         }
     }
 

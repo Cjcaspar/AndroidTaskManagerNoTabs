@@ -10,7 +10,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,6 +24,9 @@ public class AddTaskFragment extends Fragment {
 
     private AddTaskCallback callback;
 
+    Calendar calendar = Calendar.getInstance();
+    SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+
 
 
     @BindView(R.id.title_input_edittext)
@@ -28,8 +35,14 @@ public class AddTaskFragment extends Fragment {
     @BindView(R.id.detail_input_edittext)
     protected EditText detailInput;
 
-    @BindView(R.id.duedate_input_edittext)
-    protected EditText dueDateInput;
+    @BindView(R.id.duedate_month_input)
+    protected EditText dueDateMonthInput;
+
+    @BindView(R.id.duedate_day_input)
+    protected EditText dueDateDayInput;
+
+    @BindView(R.id.duedate_year_input)
+    protected EditText dueDateYearInput;
 
     @BindView(R.id.priority_input_edittext)
     protected EditText priorityInput;
@@ -48,17 +61,50 @@ public class AddTaskFragment extends Fragment {
 
     @OnClick(R.id.add_task_button_fragment)
     protected void addTaskClicked() {
+
         if (titleInput.getText().toString().isEmpty() ||
                 detailInput.getText().toString().isEmpty() ||
-                dueDateInput.getText().toString().isEmpty() ||
+                dueDateDayInput.getText().toString().isEmpty() ||
+                dueDateMonthInput.getText().toString().isEmpty() ||
+                dueDateYearInput.getText().toString().isEmpty() ||
                 priorityInput.getText().toString().isEmpty()) {
-            Toast.makeText(getContext(), "All fields are required", Toast.LENGTH_LONG).show();
-        } else {
-            Task task = new Task(titleInput.getText().toString(), dueDateInput.getText().toString(), detailInput.getText().toString(), false, " ", false, DateConverter.fromTimestamp((long)Calendar.DATE), null);
-            callback.addTask(task);
-        }
 
+            Toast.makeText(getContext(), "All fields are required", Toast.LENGTH_LONG).show();
+
+        } else if (!priorityInput.getText().toString().equalsIgnoreCase("y") && !priorityInput.getText().toString().equalsIgnoreCase("n")) {
+
+            Toast.makeText(getContext(), "Please enter Y/N into the priority field", Toast.LENGTH_LONG).show();
+
+        } else {
+
+            try {
+                calendar.set(Calendar.MONTH, (Integer.parseInt(dueDateMonthInput.getText().toString())-1));
+                calendar.set(Calendar.YEAR, Integer.parseInt(dueDateYearInput.getText().toString()));
+                calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dueDateDayInput.getText().toString()));
+
+                String sDate = format.format(calendar.getTime());
+
+
+
+
+
+
+                Task task = new Task(titleInput.getText().toString(), sDate, detailInput.getText().toString(), false, null, false, null, null);
+                if (priorityInput.getText().toString().equalsIgnoreCase("y")) {
+                    task.setPriority(true);
+                } else {
+                    task.setPriority(false);
+                }
+
+                callback.addTask(task);
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Invalid date format. Please try again.", Toast.LENGTH_LONG).show();
+            }
+
+        }
     }
+
+
 
     public static AddTaskFragment newInstance() {
 

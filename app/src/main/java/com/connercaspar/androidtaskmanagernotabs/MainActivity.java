@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -17,6 +18,8 @@ public class MainActivity extends AppCompatActivity implements TaskDao, AddTaskF
     private EditTaskFragment editTaskFragment;
     private CompleteTaskFragment completeTaskFragment;
     private IncompleteTaskFragment incompleteTaskFragment;
+
+    Date date = new Date();
 
     public static final String TASK_KEY = "Task";
 
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements TaskDao, AddTaskF
 
     @Override
     public void addTask(Task task) {
+        task.setDateCreated(DateConverter.fromTimestamp(date.getTime()));
         taskDatabase.taskDao().addTask(task);
         getSupportFragmentManager().beginTransaction().remove(addTaskFragment).commit();
         Toast.makeText(this, "Task Added!", Toast.LENGTH_SHORT).show();
@@ -120,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements TaskDao, AddTaskF
     public void saveEditTask(Task task) {
         updateTasks(task);
         getSupportFragmentManager().beginTransaction().remove(editTaskFragment).commit();
-        Toast.makeText(this, "Changes have been saved!!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Changes have been saved!", Toast.LENGTH_SHORT).show();
     }
 
     public void editBackButton() {
