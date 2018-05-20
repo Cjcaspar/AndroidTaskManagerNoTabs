@@ -1,13 +1,16 @@
 package com.connercaspar.androidtaskmanagernotabs;
 
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -36,6 +39,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         holder.bind(position);
         holder.layout.setOnClickListener(holder.onItemClicked(taskList.get(position)));
+        holder.layout.setOnLongClickListener(holder.onItemLongClicked(taskList.get(position)));
 
     }
 
@@ -75,6 +79,16 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         //TODO: ONCLICK LISTENER FOR ITEMS
 
+        public View.OnLongClickListener onItemLongClicked(final Task task) {
+            return new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    alertDialogCreate(view, task);
+                    return false;
+                }
+            };
+        }
+
         public View.OnClickListener onItemClicked(final Task task) {
             return new View.OnClickListener() {
                 @Override
@@ -83,11 +97,32 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                 }
             };
         }
+    }
+
+    private void alertDialogCreate(View view, final Task task) {
+        AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
+        alertDialog.setTitle(App.context().getResources().getString(R.string.delete_alert_title, task.getTitle()));
+        alertDialog.setMessage(App.context().getResources().getString(R.string.delete_alert_message));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, App.context().getResources().getString(R.string.alert_delete_button), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                callback.onTaskLongClicked(task);
+                dialog.dismiss();
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, App.context().getResources().getString(R.string.cancel_changes_button), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.show();
 
     }
 
     interface AdapterCallback {
         void onTaskClicked(Task task);
+        void onTaskLongClicked(Task task);
     }
 
 }

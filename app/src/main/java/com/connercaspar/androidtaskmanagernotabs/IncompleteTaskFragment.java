@@ -1,16 +1,19 @@
 package com.connercaspar.androidtaskmanagernotabs;
 
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +45,6 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -52,7 +54,6 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
         View view = inflater.inflate(R.layout.fragment_all_task, container, false);
         ButterKnife.bind(this, view);
         taskList = callback.getTasks();
-
         incompleteList = getIncompleteList(taskList);
 
 
@@ -100,6 +101,22 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
         return fragment;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onTaskLongClicked(final Task task) {
+                callback.deleteTaskClicked(task);
+                updateList();
+                Toast.makeText(getContext(), "Task Deleted!", Toast.LENGTH_LONG).show();
+
+    }
+
+    private void updateList() {
+        taskList = callback.getTasks();
+        incompleteList = getIncompleteList(taskList);
+        adapter.updateList(incompleteList);
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onTaskClicked(Task task) {
         callback.launchEditTaskFragment(task);
@@ -114,5 +131,6 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
         List<Task> getTasks();
         void launchEditTaskFragment(Task task);
         void incompleteBackButtonClicked();
+        void deleteTaskClicked(Task task);
     }
 }

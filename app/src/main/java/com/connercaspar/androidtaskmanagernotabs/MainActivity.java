@@ -103,6 +103,11 @@ public class MainActivity extends AppCompatActivity implements TaskDao, AddTaskF
     }
 
     @Override
+    public void deleteTaskClicked(Task task) {
+        deleteTask(task);
+    }
+
+    @Override
     public void addTask(Task task) {
         task.setDateCreated(DateConverter.fromTimestamp(date.getTime()));
         taskDatabase.taskDao().addTask(task);
