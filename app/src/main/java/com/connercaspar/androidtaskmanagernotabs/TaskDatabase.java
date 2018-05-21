@@ -7,7 +7,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-@Database(version = 2, entities = Task.class)
+@Database(version = 3, entities = Task.class)
 @TypeConverters(DateConverter.class)
 abstract class TaskDatabase extends RoomDatabase {
 

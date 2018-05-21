@@ -13,7 +13,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +30,11 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
     @BindView(R.id.all_recycler_view)
     protected RecyclerView recyclerViewAll;
 
+    @BindView(R.id.no_tasks_textview)
+    protected TextView noTasks;
+
 
     private Adapter adapter;
-    private List<Task> taskList;
     private List<Task> incompleteList;
     private IncompleteTaskCallback callback;
     private int previousScreen = 3;
@@ -54,26 +59,16 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_all_task, container, false);
         ButterKnife.bind(this, view);
-//        taskList = callback.getTasks();
-//        incompleteList = getIncompleteList(taskList);
 
         incompleteList = callback.getIncompleteTasks(false);
+
+        if (incompleteList.size() != 0) {
+            noTasks.setVisibility(View.INVISIBLE);
+        }
 
 
         setupList();
         return view;
-    }
-
-    private ArrayList<Task> getIncompleteList(List<Task> taskList) {
-        ArrayList<Task> newList = new ArrayList<>();
-
-        for (Task task : taskList) {
-            if (!task.isComplete()) {
-                newList.add(task);
-            }
-        }
-
-        return newList;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -114,8 +109,7 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
     }
 
     private void updateList() {
-        taskList = callback.getTasks();
-        incompleteList = getIncompleteList(taskList);
+        incompleteList = callback.getIncompleteTasks(false);
         adapter.updateList(incompleteList);
         adapter.notifyDataSetChanged();
     }

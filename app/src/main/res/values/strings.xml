@@ -28,6 +28,7 @@
     <string name="welcome_message">Welcome to the Task Manager!</string>
     <string name="add_task">Add Task</string>
     <string name="cancel">Cancel</string>
+    <string name="no_tasks_to_display">No Tasks to display</string>
 
 
 </resources>

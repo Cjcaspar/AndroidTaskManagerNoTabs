@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,9 +29,11 @@ public class CompleteTaskFragment extends Fragment implements Adapter.AdapterCal
     @BindView(R.id.all_recycler_view)
     protected RecyclerView recyclerViewAll;
 
+    @BindView(R.id.no_tasks_textview)
+    protected TextView noTasks;
+
 
     private Adapter adapter;
-    private List<Task> taskList;
     private List<Task> completeList;
     private CompleteTaskCallback callback;
     private int previousScreen = 2;
@@ -57,26 +60,17 @@ public class CompleteTaskFragment extends Fragment implements Adapter.AdapterCal
         View view = inflater.inflate(R.layout.fragment_all_task, container, false);
         ButterKnife.bind(this, view);
 
-//        taskList = callback.getTasks();
-//        completeList = getCompleteList(taskList);
         completeList = callback.getCompletedTasks(true);
+
+        if (completeList.size() != 0) {
+            noTasks.setVisibility(View.INVISIBLE);
+        }
 
 
         setupList();
         return view;
     }
 
-    private ArrayList<Task> getCompleteList(List<Task> taskList) {
-        ArrayList<Task> newList = new ArrayList<>();
-
-        for (Task task : taskList) {
-            if (task.isComplete()) {
-                newList.add(task);
-            }
-        }
-
-        return newList;
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupList() {
@@ -115,8 +109,7 @@ public class CompleteTaskFragment extends Fragment implements Adapter.AdapterCal
     }
 
     private void updateList() {
-        taskList = callback.getTasks();
-        completeList = getCompleteList(taskList);
+        completeList = callback.getCompletedTasks(true);
         adapter.updateList(completeList);
         adapter.notifyDataSetChanged();
     }

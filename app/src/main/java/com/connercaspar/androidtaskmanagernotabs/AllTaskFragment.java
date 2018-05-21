@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -26,6 +27,9 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
 
     @BindView(R.id.all_recycler_view)
     protected RecyclerView recyclerViewAll;
+
+    @BindView(R.id.no_tasks_textview)
+    protected TextView noTasks;
 
 
     private Adapter adapter;
@@ -55,6 +59,10 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
         View view = inflater.inflate(R.layout.fragment_all_task, container, false);
         ButterKnife.bind(this, view);
         taskList = callback.getTasks();
+
+        if (taskList.size() != 0) {
+            noTasks.setVisibility(View.INVISIBLE);
+        }
 
 
         setupList();
