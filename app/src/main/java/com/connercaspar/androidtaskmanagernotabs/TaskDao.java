@@ -26,5 +26,8 @@ public interface TaskDao {
     //Allows us to delete a game from the library
     @Delete
     void deleteTask(Task task);
+
+    @Query("SELECT * FROM task WHERE is_complete LIKE :isComplete")
+    List<Task> getCompleteTasks(boolean isComplete);
 }
 

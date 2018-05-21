@@ -77,8 +77,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             }
         }
 
-        //TODO: ONCLICK LISTENER FOR ITEMS
-
         public View.OnLongClickListener onItemLongClicked(final Task task) {
             return new View.OnLongClickListener() {
                 @Override

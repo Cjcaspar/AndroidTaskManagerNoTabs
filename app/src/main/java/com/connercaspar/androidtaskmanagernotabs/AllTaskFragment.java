@@ -31,6 +31,7 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
     private Adapter adapter;
     private List<Task> taskList;
     private AllTaskCallback callback;
+    int previousScreen = 3;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -90,7 +91,7 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
 
     @Override
     public void onTaskClicked(Task task) {
-        callback.launchEditTaskFragment(task);
+        callback.launchEditTaskFragment(task, previousScreen);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -114,7 +115,7 @@ public class AllTaskFragment extends Fragment implements Adapter.AdapterCallback
 
     public interface AllTaskCallback {
         List<Task> getTasks();
-        void launchEditTaskFragment(Task task);
+        void launchEditTaskFragment(Task task, int previousScreen);
         void allBackButtonClicked();
         void deleteTaskClicked(Task task);
     }

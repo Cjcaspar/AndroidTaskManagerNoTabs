@@ -30,8 +30,9 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
 
     private Adapter adapter;
     private List<Task> taskList;
-    private ArrayList<Task> incompleteList;
+    private List<Task> incompleteList;
     private IncompleteTaskCallback callback;
+    private int previousScreen = 3;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -53,8 +54,10 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_all_task, container, false);
         ButterKnife.bind(this, view);
-        taskList = callback.getTasks();
-        incompleteList = getIncompleteList(taskList);
+//        taskList = callback.getTasks();
+//        incompleteList = getIncompleteList(taskList);
+
+        incompleteList = callback.getIncompleteTasks(false);
 
 
         setupList();
@@ -119,7 +122,7 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
 
     @Override
     public void onTaskClicked(Task task) {
-        callback.launchEditTaskFragment(task);
+        callback.launchEditTaskFragment(task, previousScreen);
     }
 
     @OnClick(R.id.back_button)
@@ -129,8 +132,9 @@ public class IncompleteTaskFragment extends Fragment implements Adapter.AdapterC
 
     interface IncompleteTaskCallback {
         List<Task> getTasks();
-        void launchEditTaskFragment(Task task);
+        void launchEditTaskFragment(Task task, int previousScreen);
         void incompleteBackButtonClicked();
         void deleteTaskClicked(Task task);
+        List<Task> getIncompleteTasks(boolean isComplete);
     }
 }

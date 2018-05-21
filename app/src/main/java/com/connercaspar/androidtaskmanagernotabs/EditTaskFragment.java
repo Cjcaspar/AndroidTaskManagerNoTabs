@@ -22,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.connercaspar.androidtaskmanagernotabs.MainActivity.SCREEN;
 import static com.connercaspar.androidtaskmanagernotabs.MainActivity.TASK_KEY;
 
 public class EditTaskFragment extends Fragment{
@@ -79,6 +80,7 @@ public class EditTaskFragment extends Fragment{
 
     private Task task;
     private EditCallback callback;
+    private int previousScreen;
 
     SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
     Calendar calendar = Calendar.getInstance();
@@ -89,6 +91,8 @@ public class EditTaskFragment extends Fragment{
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         task = bundle.getParcelable(TASK_KEY);
+        previousScreen = bundle.getInt(SCREEN);
+
     }
 
     @Nullable
@@ -247,13 +251,13 @@ public class EditTaskFragment extends Fragment{
 
     @OnClick(R.id.edit_back_button)
     protected void backButtonClicked() {
-            callback.editBackButton();
+            callback.editBackButton(previousScreen);
     }
 
 
     interface EditCallback {
         void saveEditTask(Task task);
-        void editBackButton();
+        void editBackButton(int previousScreen);
     }
 
 

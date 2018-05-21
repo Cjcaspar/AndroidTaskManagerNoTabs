@@ -29,6 +29,7 @@ public class AddTaskFragment extends Fragment {
 
 
 
+
     @BindView(R.id.title_input_edittext)
     protected EditText titleInput;
 
@@ -46,6 +47,7 @@ public class AddTaskFragment extends Fragment {
 
     @BindView(R.id.priority_input_edittext)
     protected EditText priorityInput;
+
 
     @Nullable
     @Override
@@ -75,17 +77,19 @@ public class AddTaskFragment extends Fragment {
 
             Toast.makeText(getContext(), "Please enter Y/N into the priority field", Toast.LENGTH_LONG).show();
 
+        } else if (Integer.parseInt(dueDateDayInput.getText().toString()) < 1 ||
+                Integer.parseInt(dueDateDayInput.getText().toString()) > 31 ||
+                Integer.parseInt(dueDateMonthInput.getText().toString()) < 1 ||
+                Integer.parseInt(dueDateMonthInput.getText().toString()) > 12) {
+            Toast.makeText(getContext(), "Invalid date format. Please try again.", Toast.LENGTH_LONG).show();
         } else {
 
-            try {
+
                 calendar.set(Calendar.MONTH, (Integer.parseInt(dueDateMonthInput.getText().toString())-1));
                 calendar.set(Calendar.YEAR, Integer.parseInt(dueDateYearInput.getText().toString()));
                 calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dueDateDayInput.getText().toString()));
 
                 String sDate = format.format(calendar.getTime());
-
-
-
 
 
 
@@ -97,11 +101,12 @@ public class AddTaskFragment extends Fragment {
                 }
 
                 callback.addTask(task);
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "Invalid date format. Please try again.", Toast.LENGTH_LONG).show();
-            }
-
         }
+    }
+
+    @OnClick(R.id.back_add_task_button_fragment)
+    protected void backButtonClicked() {
+        callback.backButtonClicked();
     }
 
 
@@ -119,6 +124,7 @@ public class AddTaskFragment extends Fragment {
 
     public interface AddTaskCallback {
         void addTask(Task task);
+        void backButtonClicked();
     }
 
 }

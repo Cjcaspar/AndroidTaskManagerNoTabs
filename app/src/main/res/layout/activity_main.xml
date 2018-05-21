@@ -6,16 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:background="@android:color/black">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="@string/welcome_message"
+        android:textSize="32sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:paddingTop="12dp"
+        android:textColor="@android:color/white"/>
 
     <Button
         android:id="@+id/all_task_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/view_all_tasks"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/completed_task_button"
         android:layout_margin="12dp"/>
 
     <Button
@@ -23,7 +36,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/completed_task_button"
         android:text="@string/view_all_complete_tasks"
-        app:layout_constraintTop_toBottomOf="@+id/all_task_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/incomplete_task_button"
@@ -39,7 +51,6 @@
         app:layout_constraintBottom_toTopOf="@id/add_task_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/completed_task_button"
         android:layout_margin="12dp"
         />
 

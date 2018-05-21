@@ -31,8 +31,9 @@ public class CompleteTaskFragment extends Fragment implements Adapter.AdapterCal
 
     private Adapter adapter;
     private List<Task> taskList;
-    private ArrayList<Task> completeList;
+    private List<Task> completeList;
     private CompleteTaskCallback callback;
+    private int previousScreen = 2;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -56,8 +57,9 @@ public class CompleteTaskFragment extends Fragment implements Adapter.AdapterCal
         View view = inflater.inflate(R.layout.fragment_all_task, container, false);
         ButterKnife.bind(this, view);
 
-        taskList = callback.getTasks();
-        completeList = getCompleteList(taskList);
+//        taskList = callback.getTasks();
+//        completeList = getCompleteList(taskList);
+        completeList = callback.getCompletedTasks(true);
 
 
         setupList();
@@ -121,7 +123,7 @@ public class CompleteTaskFragment extends Fragment implements Adapter.AdapterCal
 
     @Override
     public void onTaskClicked(Task task) {
-        callback.launchEditTaskFragment(task);
+        callback.launchEditTaskFragment(task, previousScreen);
     }
 
     @OnClick(R.id.back_button)
@@ -131,9 +133,10 @@ public class CompleteTaskFragment extends Fragment implements Adapter.AdapterCal
 
     interface CompleteTaskCallback {
         List<Task> getTasks();
-        void launchEditTaskFragment(Task task);
+        void launchEditTaskFragment(Task task, int previousScreen);
         void completeBackButtonClicked();
         void deleteTaskClicked(Task task);
+        List<Task> getCompletedTasks(boolean isComplete);
     }
 
 }

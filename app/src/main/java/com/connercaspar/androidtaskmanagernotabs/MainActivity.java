@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements TaskDao, AddTaskF
     Date date = new Date();
 
     public static final String TASK_KEY = "Task";
+    public static final String SCREEN = "previous screen";
 
 
     @Override
@@ -75,11 +76,13 @@ public class MainActivity extends AppCompatActivity implements TaskDao, AddTaskF
         return taskDatabase.taskDao().getTasks();
     }
 
+
     @Override
-    public void launchEditTaskFragment(Task task) {
+    public void launchEditTaskFragment(Task task, int previousScreen) {
         editTaskFragment = EditTaskFragment.newInstance();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TASK_KEY, task);
+        bundle.putInt(SCREEN, previousScreen);
         editTaskFragment.setArguments(bundle);
         editTaskFragment.attachParent(this);
 
@@ -116,6 +119,11 @@ public class MainActivity extends AppCompatActivity implements TaskDao, AddTaskF
     }
 
     @Override
+    public void backButtonClicked() {
+        getSupportFragmentManager().beginTransaction().remove(addTaskFragment).commit();
+    }
+
+    @Override
     public void updateTasks(Task task) {
         taskDatabase.taskDao().updateTasks(task);
     }
@@ -126,13 +134,50 @@ public class MainActivity extends AppCompatActivity implements TaskDao, AddTaskF
     }
 
     @Override
+    public List<Task> getCompleteTasks(boolean isComplete) {
+        return taskDatabase.taskDao().getCompleteTasks(isComplete);
+    }
+
+    @Override
+    public List<Task> getCompletedTasks(boolean isComplete) {
+       return getCompleteTasks(isComplete);
+    }
+
+    public List<Task> getIncompleteTasks(boolean isComplete) {
+        return getCompletedTasks(isComplete);
+    }
+
+
+
+    @Override
     public void saveEditTask(Task task) {
         updateTasks(task);
         getSupportFragmentManager().beginTransaction().remove(editTaskFragment).commit();
         Toast.makeText(this, "Changes have been saved!", Toast.LENGTH_SHORT).show();
     }
 
-    public void editBackButton() {
+    public void editBackButton(int previousScreen) {
         getSupportFragmentManager().beginTransaction().remove(editTaskFragment).commit();
+
+        switch(previousScreen) {
+            case 1:
+                allTaskFragment = AllTaskFragment.newInstance();
+                allTaskFragment.attachParent(this);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, allTaskFragment).commit();
+                break;
+            case 2:
+                completeTaskFragment = CompleteTaskFragment.newInstance();
+                completeTaskFragment.attachParent(this);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, completeTaskFragment).commit();
+                break;
+            case 3:
+                incompleteTaskFragment = IncompleteTaskFragment.newInstance();
+                incompleteTaskFragment.attachParent(this);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, incompleteTaskFragment).commit();
+                break;
+            default:
+                break;
+        }
+
     }
 }

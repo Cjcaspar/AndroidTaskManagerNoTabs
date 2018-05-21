@@ -112,8 +112,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/back_add_task_button_fragment"
+        android:text="@string/cancel"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/back_add_task_button_fragment"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/add_task_button_fragment"
-        android:text="Add Task"
+        android:text="@string/add_task"
         />
 
 </android.support.constraint.ConstraintLayout>
