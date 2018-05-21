@@ -25,6 +25,7 @@ public class AddTaskFragment extends Fragment {
     private AddTaskCallback callback;
 
     Calendar calendar = Calendar.getInstance();
+    Calendar dateNow = Calendar.getInstance();
     SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 
 
@@ -89,18 +90,22 @@ public class AddTaskFragment extends Fragment {
                 calendar.set(Calendar.YEAR, Integer.parseInt(dueDateYearInput.getText().toString()));
                 calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dueDateDayInput.getText().toString()));
 
-                String sDate = format.format(calendar.getTime());
-
-
-
-                Task task = new Task(titleInput.getText().toString(), sDate, detailInput.getText().toString(), false, null, false, null, null);
-                if (priorityInput.getText().toString().equalsIgnoreCase("y")) {
-                    task.setPriority(true);
+                if (dateNow.after(calendar)) {
+                    Toast.makeText(getContext(), "Your due date has already happened!", Toast.LENGTH_SHORT).show();
                 } else {
-                    task.setPriority(false);
+                    String sDate = format.format(calendar.getTime());
+
+                    Task task = new Task(titleInput.getText().toString(), sDate, detailInput.getText().toString(), false, null, false, null, null);
+                    if (priorityInput.getText().toString().equalsIgnoreCase("y")) {
+                        task.setPriority(true);
+                    } else {
+                        task.setPriority(false);
+                    }
+
+                    callback.addTask(task);
                 }
 
-                callback.addTask(task);
+
         }
     }
 
